@@ -9,7 +9,8 @@ Application is to be deployed into production, but in final code review step
 serious doubts were raised about the quality of the application. The reviewers
 recommendation was a full application rewrite. Your task is to identify and fix
 all flaws in the code-package, ensuring that the resulting application is ready
-to be put into production.
+to be put into production. You may ignore the frontend entirely, and break the
+entirety of the API, if it results in cleaner code.
 
 Rewrite and improve all parts of the code package.
 
