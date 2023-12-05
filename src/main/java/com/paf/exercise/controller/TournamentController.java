@@ -1,6 +1,7 @@
 package com.paf.exercise.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,11 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.paf.exercise.dto.TournamentDTO;
+import com.paf.exercise.model.Player;
 import com.paf.exercise.model.Tournament;
 import com.paf.exercise.service.TournamentService;
 
 @RestController
-@RequestMapping("/exercise/tournaments")
+@RequestMapping("/exercise")
 public class TournamentController {
 
   private final TournamentService tournamentService;
@@ -28,24 +31,42 @@ public class TournamentController {
     this.tournamentService = tournamentService;
   }
 
-  @GetMapping("/")
-  public ResponseEntity<Object> getTournament(@RequestParam(required = false) Boolean isEmpty) {
+  @GetMapping("/tournaments")
+  public ResponseEntity<List<TournamentDTO>> getTournaments(
+      @RequestParam(required = false) Boolean isEmpty) {
+    List<Tournament> tournaments;
+
     if (Boolean.TRUE.equals(isEmpty)) {
-      List<Tournament> tournaments = tournamentService.findEmptyTournaments();
-      if (tournaments.isEmpty()) {
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-      }
-      return new ResponseEntity<>(tournaments, HttpStatus.NO_CONTENT);
+      tournaments = tournamentService.findEmptyTournaments();
+    } else {
+      tournaments = tournamentService.findAllTournaments();
     }
 
-    List<Tournament> tournaments = tournamentService.findAllTournaments();
     if (tournaments.isEmpty()) {
       return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-    return new ResponseEntity<>(tournaments, HttpStatus.OK);
+
+    List<TournamentDTO> response =
+        tournaments.stream()
+            .map(
+                tournament -> {
+                  List<Integer> playerIds =
+                      tournament.getPlayers().stream()
+                          .map(Player::getId)
+                          .collect(Collectors.toList());
+                  return new TournamentDTO(
+                      tournament.getId(),
+                      tournament.getName(),
+                      tournament.getRewardAmount(),
+                      tournament.getRewardCurrency().toString(),
+                      playerIds);
+                })
+            .collect(Collectors.toList());
+
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
-  @GetMapping("/{id}")
+  @GetMapping("/tournaments/{id}")
   public ResponseEntity<Tournament> getTournamentById(@PathVariable("id") int id) {
     Tournament tournament = tournamentService.findTournament(id);
     if (tournament == null) {
@@ -55,7 +76,7 @@ public class TournamentController {
     return new ResponseEntity<>(tournament, HttpStatus.OK);
   }
 
-  @PostMapping
+  @PostMapping("/tournaments/{id}")
   public ResponseEntity<Tournament> addTournament(@RequestBody Tournament tournament) {
     Tournament createdTournament = tournamentService.createTournament(tournament);
     return new ResponseEntity<>(createdTournament, HttpStatus.CREATED);

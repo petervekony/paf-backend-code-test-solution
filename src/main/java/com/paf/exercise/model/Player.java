@@ -20,8 +20,6 @@ public class Player {
 
   private String name;
 
-  private String email;
-
   @ManyToMany
   @JoinTable(
       name = "player_tournament",
@@ -29,8 +27,7 @@ public class Player {
       inverseJoinColumns = @JoinColumn(name = "tournament_id"))
   private List<Tournament> tournaments = new ArrayList<>();
 
-  public Player(String name, String email) {
+  public Player(String name) {
     this.name = name;
-    this.email = email;
   }
 }
