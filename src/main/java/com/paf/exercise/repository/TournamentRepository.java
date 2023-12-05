@@ -14,5 +14,5 @@ public interface TournamentRepository extends JpaRepository<Tournament, Integer>
 
   List<Tournament> findAll();
 
-  void deleteById(Integer id);
+  void deleteById(int id);
 }

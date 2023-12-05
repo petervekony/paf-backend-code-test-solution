@@ -1,6 +1,8 @@
-package com.paf.exercise.model;
+package com.paf.exercise.dto;
 
 import java.util.Currency;
+
+import com.paf.exercise.model.Player;
 
 import lombok.Data;
 

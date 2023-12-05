@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.paf.exercise.exercise.model.Exercise;
-import com.paf.exercise.exercise.repository.ExerciseRepository;
+import com.paf.exercise.dto.Exercise;
+import com.paf.exercise.repository.ExerciseRepository;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/exercise")
 public class ExerciseController {
 
   private final JdbcTemplate jdbcTemplate;

@@ -2,7 +2,7 @@ CREATE TABLE tournament (
     id INT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     reward_amount DECIMAL(10, 2),
-    reward_currency VARCHAR(3) DEFAULT 'EUR'
+    reward_currency VARCHAR(10) DEFAULT 'EUR'
 );
 
 CREATE TABLE player (
