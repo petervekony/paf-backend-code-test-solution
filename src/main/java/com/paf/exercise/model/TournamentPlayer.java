@@ -7,6 +7,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.paf.exercise.dto.TournamentPlayerDTO;
+
 import lombok.Data;
 
 @Entity
@@ -24,4 +26,13 @@ public class TournamentPlayer {
   @ManyToOne
   @JoinColumn(name = "player_id")
   private Player player;
+
+  public TournamentPlayerDTO convertToDTO() {
+    return new TournamentPlayerDTO(
+        tournament.getId(),
+        tournament.getRewardAmount(),
+        tournament.getRewardCurrency().toString(),
+        player.getId(),
+        player.getName());
+  }
 }

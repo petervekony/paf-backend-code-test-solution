@@ -10,5 +10,5 @@ import com.paf.exercise.model.TournamentPlayerId;
 public interface TournamentPlayerRepository
     extends JpaRepository<TournamentPlayer, TournamentPlayerId> {
 
-  Optional<TournamentPlayer> findByPlayerIdAndTournamentId(int playerId, int tournamentId);
+  Optional<TournamentPlayer> findByPlayerIdAndTournamentId(Integer playerId, Integer tournamentId);
 }

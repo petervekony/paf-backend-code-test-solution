@@ -1,5 +1,6 @@
 package com.paf.exercise.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -15,4 +16,11 @@ public class TournamentDTO {
   private Double rewardAmount;
   private String rewardCurrency;
   private List<Integer> players;
+
+  public TournamentDTO(String name, Double rewardAmount, String rewardCurrency) {
+    this.name = name;
+    this.rewardAmount = rewardAmount;
+    this.rewardCurrency = rewardCurrency;
+    this.players = new ArrayList<>();
+  }
 }

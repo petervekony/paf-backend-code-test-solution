@@ -22,7 +22,7 @@ import com.paf.exercise.service.PlayerService;
 import javassist.NotFoundException;
 
 @RestController
-@RequestMapping("/exercise")
+@RequestMapping("/api")
 public class PlayerController {
   private final PlayerService playerService;
 
@@ -31,7 +31,7 @@ public class PlayerController {
     this.playerService = playerService;
   }
 
-  @GetMapping("/player")
+  @GetMapping("/players")
   public ResponseEntity<List<PlayerDTO>> getAllPlayers() {
     List<Player> allPlayers = playerService.getAllPlayers();
     if (allPlayers.isEmpty()) {
@@ -45,20 +45,20 @@ public class PlayerController {
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
-  @PostMapping("/player/{id}")
-  public ResponseEntity<PlayerDTO> createPlayer(@PathVariable("id") PlayerDTO playerRequest) {
+  @PostMapping("/players")
+  public ResponseEntity<PlayerDTO> createPlayer(@RequestBody PlayerDTO playerRequest) {
     Player created = playerService.createPlayer(playerRequest.getName());
     return new ResponseEntity<>(
         new PlayerDTO(created.getId(), created.getName()), HttpStatus.CREATED);
   }
 
-  @DeleteMapping("/player/{id}")
+  @DeleteMapping("/players/{id}")
   public ResponseEntity<HttpStatus> deletePlayer(@PathVariable("id") Integer id) {
     playerService.deletePlayer(id);
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
-  @PutMapping("/player/{id}")
+  @PutMapping("/players/{id}")
   public ResponseEntity<PlayerDTO> updatePlayer(
       @PathVariable("id") Integer id, @RequestBody PlayerDTO playerDetails) {
     try {
@@ -70,7 +70,7 @@ public class PlayerController {
     }
   }
 
-  @GetMapping("/player/{id}")
+  @GetMapping("/players/{id}")
   public ResponseEntity<PlayerDTO> getPlayer(@PathVariable("id") Integer id) {
     Player player = playerService.getPlayer(id);
     if (player == null) {

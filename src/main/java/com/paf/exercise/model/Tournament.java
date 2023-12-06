@@ -1,7 +1,6 @@
 package com.paf.exercise.model;
 
 import java.util.ArrayList;
-import java.util.Currency;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,12 +8,14 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import com.paf.exercise.dto.TournamentDTO;
+import com.paf.exercise.model.enums.Currency;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,7 +25,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "tournament")
 public class Tournament {
-  @Id private Integer id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Integer id;
+
   private String name;
 
   @Column(name = "reward_amount")
@@ -34,11 +38,13 @@ public class Tournament {
   @Column(name = "reward_currency")
   private Currency rewardCurrency;
 
-  @OneToMany(mappedBy = "tournament", fetch = FetchType.LAZY)
+  @ManyToMany(mappedBy = "tournaments")
   private List<Player> players = new ArrayList<>();
 
-  public Tournament(String name) {
+  public Tournament(String name, Double rewardAmount, Currency rewardCurrency) {
     this.name = name;
+    this.rewardAmount = rewardAmount;
+    this.rewardCurrency = rewardCurrency;
   }
 
   public TournamentDTO convertToDTO() {
