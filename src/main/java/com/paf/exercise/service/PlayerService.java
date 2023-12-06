@@ -6,10 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.paf.exercise.dto.PlayerDTO;
+import com.paf.exercise.exception.NotFoundException;
 import com.paf.exercise.model.Player;
 import com.paf.exercise.repository.PlayerRepository;
-
-import javassist.NotFoundException;
 
 @Service
 public class PlayerService {
@@ -25,7 +24,9 @@ public class PlayerService {
   }
 
   public Player getPlayer(Integer id) {
-    return playerRepository.findById(id).orElse(null);
+    return playerRepository
+        .findById(id)
+        .orElseThrow(() -> new NotFoundException("Player not found"));
   }
 
   public List<Player> getAllPlayers() {
@@ -36,7 +37,7 @@ public class PlayerService {
     playerRepository.deleteById(id);
   }
 
-  public Player updatePlayer(Integer id, PlayerDTO playerDetails) throws NotFoundException {
+  public Player updatePlayer(Integer id, PlayerDTO playerDetails) {
     Player player =
         playerRepository.findById(id).orElseThrow(() -> new NotFoundException("Player not found"));
 

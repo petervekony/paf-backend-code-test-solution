@@ -12,14 +12,13 @@ import org.springframework.stereotype.Service;
 import com.paf.exercise.dto.ExerciseDTO;
 import com.paf.exercise.dto.PlayerDTO;
 import com.paf.exercise.dto.TournamentDTO;
+import com.paf.exercise.exception.NotFoundException;
 import com.paf.exercise.exception.PlayerAlreadyRegisteredInTournamentException;
 import com.paf.exercise.model.Player;
 import com.paf.exercise.model.Tournament;
 import com.paf.exercise.model.enums.Currency;
 import com.paf.exercise.repository.PlayerRepository;
 import com.paf.exercise.repository.TournamentRepository;
-
-import javassist.NotFoundException;
 
 @Service
 public class TournamentService {
@@ -48,7 +47,7 @@ public class TournamentService {
     return tournamentQuery.get();
   }
 
-  public List<PlayerDTO> getAllPlayersInTournament(Integer tournamentId) throws NotFoundException {
+  public List<PlayerDTO> getAllPlayersInTournament(Integer tournamentId) {
     Tournament tournament =
         tournamentRepository
             .findById(tournamentId)
@@ -58,8 +57,7 @@ public class TournamentService {
   }
 
   @Transactional
-  public ExerciseDTO addPlayerToTournament(int playerId, int tournamentId)
-      throws NotFoundException, PlayerAlreadyRegisteredInTournamentException {
+  public ExerciseDTO addPlayerToTournament(int playerId, int tournamentId) {
     Player player =
         playerRepository
             .findById(playerId)
@@ -90,7 +88,7 @@ public class TournamentService {
   }
 
   @Transactional
-  public void removePlayerFromTournament(int playerId, int tournamentId) throws NotFoundException {
+  public void removePlayerFromTournament(int playerId, int tournamentId) {
     Player player =
         playerRepository
             .findById(playerId)
@@ -118,25 +116,22 @@ public class TournamentService {
     return tournamentRepository.findTournamentsWithoutPlayers();
   }
 
+  public List<Tournament> findNonEmptyTournaments() {
+    return tournamentRepository.findTournamentsWithPlayers();
+  }
+
   public List<Tournament> findAllTournaments() {
     return tournamentRepository.findAll();
   }
 
-  public TournamentDTO updateTournamentDetails(Integer id, TournamentDTO request)
-      throws NotFoundException, IllegalArgumentException {
+  public TournamentDTO updateTournamentDetails(Integer id, TournamentDTO request) {
     Tournament tournament =
         tournamentRepository
             .findById(id)
             .orElseThrow(() -> new NotFoundException(TOURNAMENT_NOT_FOUND));
-    if (request.getName() != null) {
-      tournament.setName(request.getName());
-    }
-    if (request.getRewardAmount() != null) {
-      tournament.setRewardAmount(request.getRewardAmount());
-    }
-    if (request.getRewardCurrency() != null) {
-      tournament.setRewardCurrency(Currency.valueOf(request.getRewardCurrency()));
-    }
+    tournament.setName(request.getName());
+    tournament.setRewardAmount(request.getRewardAmount());
+    tournament.setRewardCurrency(Currency.valueOf(request.getRewardCurrency()));
 
     return tournamentRepository.save(tournament).convertToDTO();
   }

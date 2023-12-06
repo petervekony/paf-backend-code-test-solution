@@ -1,7 +1,10 @@
 package com.paf.exercise.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,13 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.paf.exercise.dto.ExerciseDTO;
 import com.paf.exercise.dto.PlayerDTO;
 import com.paf.exercise.dto.TournamentDTO;
-import com.paf.exercise.exception.PlayerAlreadyRegisteredInTournamentException;
 import com.paf.exercise.model.Player;
 import com.paf.exercise.model.Tournament;
 import com.paf.exercise.model.enums.Currency;
 import com.paf.exercise.service.TournamentService;
-
-import javassist.NotFoundException;
 
 @RestController
 @RequestMapping("/api")
@@ -45,12 +45,14 @@ public class TournamentController {
 
     if (Boolean.TRUE.equals(isEmpty)) {
       tournaments = tournamentService.findEmptyTournaments();
+    } else if (Boolean.FALSE.equals(isEmpty)) {
+      tournaments = tournamentService.findNonEmptyTournaments();
     } else {
       tournaments = tournamentService.findAllTournaments();
     }
 
     if (tournaments.isEmpty()) {
-      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NO_CONTENT);
     }
 
     List<TournamentDTO> response =
@@ -95,18 +97,12 @@ public class TournamentController {
   @GetMapping("/tournaments/{tournamentId}/players")
   public ResponseEntity<List<PlayerDTO>> getAllPlayersInTournament(
       @PathVariable Integer tournamentId) {
-    try {
-      List<PlayerDTO> players = tournamentService.getAllPlayersInTournament(tournamentId);
-      return new ResponseEntity<>(players, HttpStatus.OK);
-    } catch (NotFoundException e) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    List<PlayerDTO> players = tournamentService.getAllPlayersInTournament(tournamentId);
+    return new ResponseEntity<>(players, HttpStatus.OK);
   }
 
   @PostMapping("/tournaments")
-  public ResponseEntity<TournamentDTO> addTournament(@RequestBody TournamentDTO request) {
+  public ResponseEntity<TournamentDTO> addTournament(@Valid @RequestBody TournamentDTO request) {
     Currency rewardCurrency;
     try {
       rewardCurrency = Currency.valueOf(request.getRewardCurrency());
@@ -123,15 +119,9 @@ public class TournamentController {
 
   @PutMapping("/tournaments/{id}")
   public ResponseEntity<TournamentDTO> updateTournamentDetails(
-      @PathVariable("id") Integer id, @RequestBody TournamentDTO request) {
-    try {
-      TournamentDTO response = tournamentService.updateTournamentDetails(id, request);
-      return new ResponseEntity<>(response, HttpStatus.OK);
-    } catch (NotFoundException e) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    } catch (IllegalArgumentException e) {
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
+      @PathVariable("id") Integer id, @Valid @RequestBody TournamentDTO request) {
+    TournamentDTO response = tournamentService.updateTournamentDetails(id, request);
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
   @DeleteMapping("/tournaments/{id}")
@@ -142,24 +132,14 @@ public class TournamentController {
   @DeleteMapping("/tournaments/{tournamentId}/players/{playerId}")
   public ResponseEntity<Object> removePlayerFromTournament(
       @PathVariable Integer tournamentId, @PathVariable Integer playerId) {
-    try {
-      tournamentService.removePlayerFromTournament(playerId, tournamentId);
-      return new ResponseEntity<>(HttpStatus.OK);
-    } catch (NotFoundException e) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+    tournamentService.removePlayerFromTournament(playerId, tournamentId);
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 
   @PostMapping("/tournaments/{tournamentId}/players/{playerId}")
   public ResponseEntity<ExerciseDTO> addPlayerToTournament(
       @PathVariable Integer tournamentId, @PathVariable Integer playerId) {
-    try {
-      ExerciseDTO response = tournamentService.addPlayerToTournament(playerId, tournamentId);
-      return new ResponseEntity<>(response, HttpStatus.OK);
-    } catch (NotFoundException e) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    } catch (PlayerAlreadyRegisteredInTournamentException e) {
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
+    ExerciseDTO response = tournamentService.addPlayerToTournament(playerId, tournamentId);
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 }

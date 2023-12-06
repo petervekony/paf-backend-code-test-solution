@@ -3,6 +3,8 @@ package com.paf.exercise.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.paf.exercise.dto.PlayerDTO;
 import com.paf.exercise.model.Player;
 import com.paf.exercise.service.PlayerService;
-
-import javassist.NotFoundException;
 
 @RestController
 @RequestMapping("/api")
@@ -46,7 +46,7 @@ public class PlayerController {
   }
 
   @PostMapping("/players")
-  public ResponseEntity<PlayerDTO> createPlayer(@RequestBody PlayerDTO playerRequest) {
+  public ResponseEntity<PlayerDTO> createPlayer(@Valid @RequestBody PlayerDTO playerRequest) {
     Player created = playerService.createPlayer(playerRequest.getName());
     return new ResponseEntity<>(
         new PlayerDTO(created.getId(), created.getName()), HttpStatus.CREATED);
@@ -60,23 +60,15 @@ public class PlayerController {
 
   @PutMapping("/players/{id}")
   public ResponseEntity<PlayerDTO> updatePlayer(
-      @PathVariable("id") Integer id, @RequestBody PlayerDTO playerDetails) {
-    try {
-      Player updatedPlayer = playerService.updatePlayer(id, playerDetails);
-      return new ResponseEntity<>(
-          new PlayerDTO(updatedPlayer.getId(), updatedPlayer.getName()), HttpStatus.OK);
-    } catch (NotFoundException e) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+      @PathVariable("id") Integer id, @Valid @RequestBody PlayerDTO playerDetails) {
+    Player updatedPlayer = playerService.updatePlayer(id, playerDetails);
+    return new ResponseEntity<>(
+        new PlayerDTO(updatedPlayer.getId(), updatedPlayer.getName()), HttpStatus.OK);
   }
 
   @GetMapping("/players/{id}")
   public ResponseEntity<PlayerDTO> getPlayer(@PathVariable("id") Integer id) {
     Player player = playerService.getPlayer(id);
-    if (player == null) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-
     return new ResponseEntity<>(new PlayerDTO(player.getId(), player.getName()), HttpStatus.OK);
   }
 }

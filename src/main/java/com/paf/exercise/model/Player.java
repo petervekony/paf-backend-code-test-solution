@@ -11,11 +11,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 import com.paf.exercise.dto.PlayerDTO;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 @Entity
 @Data
@@ -26,6 +28,8 @@ public class Player {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Integer id;
 
+  @NonNull
+  @Size(min = 3, max = 255, message = "Invalid name")
   private String name;
 
   @ManyToMany
