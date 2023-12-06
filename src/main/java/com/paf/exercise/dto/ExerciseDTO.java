@@ -7,8 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TournamentPlayerDTO {
+public class ExerciseDTO {
   Integer tournamentId;
+  String tournamentName;
   Double rewardAmount;
   String rewardCurrency;
   Integer playerId;

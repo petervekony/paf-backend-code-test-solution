@@ -30,7 +30,7 @@ public class Player {
 
   @ManyToMany
   @JoinTable(
-      name = "player_tournament",
+      name = "tournament_player",
       joinColumns = @JoinColumn(name = "player_id"),
       inverseJoinColumns = @JoinColumn(name = "tournament_id"))
   private List<Tournament> tournaments = new ArrayList<>();

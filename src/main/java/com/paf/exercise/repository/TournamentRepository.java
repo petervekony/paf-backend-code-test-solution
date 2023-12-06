@@ -12,9 +12,7 @@ import com.paf.exercise.model.Tournament;
 public interface TournamentRepository extends JpaRepository<Tournament, Integer> {
   Optional<Tournament> findById(Integer id);
 
-  @Query(
-      "SELECT t FROM Tournament t WHERE t.id NOT IN (SELECT tp.tournament.id FROM TournamentPlayer"
-          + " tp)")
+  @Query("SELECT t FROM Tournament t WHERE t.players IS EMPTY")
   List<Tournament> findTournamentsWithoutPlayers();
 
   @Query("SELECT t FROM Tournament t LEFT JOIN FETCH t.players WHERE t.id = :id")

@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.paf.exercise.dto.ExerciseDTO;
 import com.paf.exercise.dto.PlayerDTO;
 import com.paf.exercise.dto.TournamentDTO;
-import com.paf.exercise.dto.TournamentPlayerDTO;
 import com.paf.exercise.exception.PlayerAlreadyRegisteredInTournamentException;
 import com.paf.exercise.model.Player;
 import com.paf.exercise.model.Tournament;
@@ -151,11 +151,10 @@ public class TournamentController {
   }
 
   @PostMapping("/tournaments/{tournamentId}/players/{playerId}")
-  public ResponseEntity<TournamentPlayerDTO> addPlayerToTournament(
+  public ResponseEntity<ExerciseDTO> addPlayerToTournament(
       @PathVariable Integer tournamentId, @PathVariable Integer playerId) {
     try {
-      TournamentPlayerDTO response =
-          tournamentService.addPlayerToTournament(playerId, tournamentId);
+      ExerciseDTO response = tournamentService.addPlayerToTournament(playerId, tournamentId);
       return new ResponseEntity<>(response, HttpStatus.OK);
     } catch (NotFoundException e) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
