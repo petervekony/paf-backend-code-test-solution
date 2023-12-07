@@ -43,14 +43,13 @@ class PlayerServiceTests {
 
   @Test
   void testCreatePlayer() {
-    String playerName = JOHN_DOE;
-    Player mockPlayer = new Player(playerName);
+    Player mockPlayer = new Player(JOHN_DOE);
     when(playerRepository.save(any(Player.class))).thenReturn(mockPlayer);
 
-    Player createdPlayer = playerService.createPlayer(playerName);
+    Player createdPlayer = playerService.createPlayer(JOHN_DOE);
 
     assertNotNull(createdPlayer);
-    assertEquals(playerName, createdPlayer.getName());
+    assertEquals(JOHN_DOE, createdPlayer.getName());
   }
 
   @Test

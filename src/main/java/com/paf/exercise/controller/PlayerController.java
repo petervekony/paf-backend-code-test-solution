@@ -1,5 +1,6 @@
 package com.paf.exercise.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,7 +36,7 @@ public class PlayerController {
   public ResponseEntity<List<PlayerDTO>> getAllPlayers() {
     List<Player> allPlayers = playerService.getAllPlayers();
     if (allPlayers.isEmpty()) {
-      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
     }
     List<PlayerDTO> response =
         allPlayers.stream()
@@ -43,6 +44,12 @@ public class PlayerController {
             .collect(Collectors.toList());
 
     return new ResponseEntity<>(response, HttpStatus.OK);
+  }
+
+  @GetMapping("/players/{id}")
+  public ResponseEntity<PlayerDTO> getPlayer(@PathVariable("id") Integer id) {
+    Player player = playerService.getPlayer(id);
+    return new ResponseEntity<>(new PlayerDTO(player.getId(), player.getName()), HttpStatus.OK);
   }
 
   @PostMapping("/players")
@@ -55,7 +62,7 @@ public class PlayerController {
   @DeleteMapping("/players/{id}")
   public ResponseEntity<HttpStatus> deletePlayer(@PathVariable("id") Integer id) {
     playerService.deletePlayer(id);
-    return new ResponseEntity<>(HttpStatus.OK);
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 
   @PutMapping("/players/{id}")
@@ -64,11 +71,5 @@ public class PlayerController {
     Player updatedPlayer = playerService.updatePlayer(id, playerDetails);
     return new ResponseEntity<>(
         new PlayerDTO(updatedPlayer.getId(), updatedPlayer.getName()), HttpStatus.OK);
-  }
-
-  @GetMapping("/players/{id}")
-  public ResponseEntity<PlayerDTO> getPlayer(@PathVariable("id") Integer id) {
-    Player player = playerService.getPlayer(id);
-    return new ResponseEntity<>(new PlayerDTO(player.getId(), player.getName()), HttpStatus.OK);
   }
 }

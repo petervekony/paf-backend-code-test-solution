@@ -52,7 +52,7 @@ public class TournamentController {
     }
 
     if (tournaments.isEmpty()) {
-      return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NO_CONTENT);
+      return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
     }
 
     List<TournamentDTO> response =
@@ -78,9 +78,6 @@ public class TournamentController {
   @GetMapping("/tournaments/{id}")
   public ResponseEntity<TournamentDTO> getTournamentById(@PathVariable("id") Integer id) {
     Tournament tournament = tournamentService.findTournament(id);
-    if (tournament == null) {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
     List<Integer> playerIds =
         tournament.getPlayers().stream().map(Player::getId).collect(Collectors.toList());
     TournamentDTO response =
@@ -125,15 +122,16 @@ public class TournamentController {
   }
 
   @DeleteMapping("/tournaments/{id}")
-  public void deleteTournament(@PathVariable("id") Integer id) {
+  public ResponseEntity<HttpStatus> deleteTournament(@PathVariable("id") Integer id) {
     tournamentService.deleteTournament(id);
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 
   @DeleteMapping("/tournaments/{tournamentId}/players/{playerId}")
-  public ResponseEntity<Object> removePlayerFromTournament(
+  public ResponseEntity<HttpStatus> removePlayerFromTournament(
       @PathVariable Integer tournamentId, @PathVariable Integer playerId) {
     tournamentService.removePlayerFromTournament(playerId, tournamentId);
-    return new ResponseEntity<>(HttpStatus.OK);
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 
   @PutMapping("/tournaments/{tournamentId}/players/{playerId}")

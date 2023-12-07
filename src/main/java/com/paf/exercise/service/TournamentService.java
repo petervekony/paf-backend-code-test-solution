@@ -41,7 +41,7 @@ public class TournamentService {
   public Tournament findTournament(int id) {
     Optional<Tournament> tournamentQuery = tournamentRepository.findById(id);
     if (tournamentQuery.isEmpty()) {
-      return null;
+      throw new NotFoundException(TOURNAMENT_NOT_FOUND);
     }
 
     return tournamentQuery.get();
