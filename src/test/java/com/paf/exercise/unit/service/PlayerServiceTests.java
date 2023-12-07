@@ -1,4 +1,4 @@
-package com.paf.exercise.service;
+package com.paf.exercise.unit.service;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,9 +24,13 @@ import com.paf.exercise.dto.PlayerDTO;
 import com.paf.exercise.exception.NotFoundException;
 import com.paf.exercise.model.Player;
 import com.paf.exercise.repository.PlayerRepository;
+import com.paf.exercise.service.PlayerService;
 
 @SpringBootTest
 class PlayerServiceTests {
+
+  private static final String JANE_DOE = "Jane Doe";
+  private static final String JOHN_DOE = "John Doe";
 
   @Mock private PlayerRepository playerRepository;
 
@@ -39,7 +43,7 @@ class PlayerServiceTests {
 
   @Test
   void testCreatePlayer() {
-    String playerName = "John Doe";
+    String playerName = JOHN_DOE;
     Player mockPlayer = new Player(playerName);
     when(playerRepository.save(any(Player.class))).thenReturn(mockPlayer);
 
@@ -52,13 +56,13 @@ class PlayerServiceTests {
   @Test
   void testGetPlayerSuccess() {
     Integer playerId = 1;
-    Player mockPlayer = new Player("John Doe");
+    Player mockPlayer = new Player(JOHN_DOE);
     when(playerRepository.findById(playerId)).thenReturn(Optional.of(mockPlayer));
 
     Player foundPlayer = playerService.getPlayer(playerId);
 
     assertNotNull(foundPlayer);
-    assertEquals("John Doe", foundPlayer.getName());
+    assertEquals(JOHN_DOE, foundPlayer.getName());
   }
 
   @Test
@@ -75,7 +79,7 @@ class PlayerServiceTests {
 
   @Test
   void testGetAllPlayers() {
-    List<Player> mockPlayers = Arrays.asList(new Player("John Doe"), new Player("Jane Doe"));
+    List<Player> mockPlayers = Arrays.asList(new Player(JOHN_DOE), new Player(JANE_DOE));
     when(playerRepository.findAll()).thenReturn(mockPlayers);
 
     List<Player> players = playerService.getAllPlayers();
@@ -95,8 +99,8 @@ class PlayerServiceTests {
   @Test
   void testUpdatePlayerSuccess() {
     Integer playerId = 1;
-    String updatedName = "Jane Doe";
-    Player mockPlayer = new Player("John Doe");
+    String updatedName = JANE_DOE;
+    Player mockPlayer = new Player(JOHN_DOE);
     PlayerDTO playerDTO = new PlayerDTO();
     playerDTO.setName(updatedName);
 
@@ -113,7 +117,7 @@ class PlayerServiceTests {
   void testUpdatePlayerNotFound() {
     Integer playerId = 1;
     PlayerDTO playerDTO = new PlayerDTO();
-    playerDTO.setName("Jane Doe");
+    playerDTO.setName(JANE_DOE);
 
     when(playerRepository.findById(playerId)).thenReturn(Optional.empty());
 

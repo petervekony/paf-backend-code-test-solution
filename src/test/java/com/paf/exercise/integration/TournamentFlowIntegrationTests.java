@@ -8,6 +8,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -18,9 +20,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -34,11 +33,11 @@ public class TournamentFlowIntegrationTests {
   private static String tournamentId;
   private static String playerId;
 
-  @Autowired private static MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
   @Test
   @Order(1)
-  public static void createTournamentTest() throws Exception {
+  public void createTournamentTest() throws Exception {
     MvcResult result =
         mockMvc
             .perform(
@@ -55,7 +54,7 @@ public class TournamentFlowIntegrationTests {
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode rootNode = objectMapper.readTree(responseBody);
     int id = rootNode.path("id").asInt();
-    TournamentFlowIntegrationTests.tournamentId = String.valueOf(id);
+    this.tournamentId = String.valueOf(id);
   }
 
   @Test
@@ -68,7 +67,6 @@ public class TournamentFlowIntegrationTests {
             .andReturn();
 
     String responseBody = result.getResponse().getContentAsString();
-    System.out.println("Player ResponseBody: " + responseBody);
 
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode rootNode = objectMapper.readTree(responseBody);
