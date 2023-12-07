@@ -3,6 +3,7 @@ package com.paf.exercise.dto;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
@@ -17,11 +18,11 @@ public class TournamentDTO {
   private Integer id;
 
   @NonNull
-  @Size(max = 255, message = "Tournament name too long")
+  @Size(min = 3, max = 255, message = "Tournament name too long")
   private String name;
 
   @NonNull
-  @Size(min = 0, message = "Invalid reward amount")
+  @Min(value = 0, message = "Invalid reward amount")
   private Double rewardAmount;
 
   @NonNull

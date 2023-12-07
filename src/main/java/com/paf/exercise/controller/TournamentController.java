@@ -136,7 +136,7 @@ public class TournamentController {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
-  @PostMapping("/tournaments/{tournamentId}/players/{playerId}")
+  @PutMapping("/tournaments/{tournamentId}/players/{playerId}")
   public ResponseEntity<ExerciseDTO> addPlayerToTournament(
       @PathVariable Integer tournamentId, @PathVariable Integer playerId) {
     ExerciseDTO response = tournamentService.addPlayerToTournament(playerId, tournamentId);
