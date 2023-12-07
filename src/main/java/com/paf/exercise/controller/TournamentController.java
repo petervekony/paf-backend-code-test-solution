@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +24,8 @@ import com.paf.exercise.model.Player;
 import com.paf.exercise.model.Tournament;
 import com.paf.exercise.model.enums.Currency;
 import com.paf.exercise.service.TournamentService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api")

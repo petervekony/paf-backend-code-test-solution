@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +17,8 @@ import com.paf.exercise.model.Tournament;
 import com.paf.exercise.model.enums.Currency;
 import com.paf.exercise.repository.PlayerRepository;
 import com.paf.exercise.repository.TournamentRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class TournamentService {

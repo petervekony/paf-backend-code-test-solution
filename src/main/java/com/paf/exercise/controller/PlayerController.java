@@ -3,8 +3,6 @@ package com.paf.exercise.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.paf.exercise.dto.PlayerDTO;
 import com.paf.exercise.model.Player;
 import com.paf.exercise.service.PlayerService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api")
