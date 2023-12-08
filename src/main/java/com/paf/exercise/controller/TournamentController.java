@@ -70,7 +70,7 @@ public class TournamentController {
                       tournament.getRewardCurrency().toString(),
                       playerIds);
                 })
-            .collect(Collectors.toList());
+            .toList();
 
     return new ResponseEntity<>(response, HttpStatus.OK);
   }

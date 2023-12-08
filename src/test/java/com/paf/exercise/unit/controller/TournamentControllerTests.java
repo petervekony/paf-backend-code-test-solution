@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.paf.exercise.controller.TournamentController;
 import com.paf.exercise.dto.ExerciseDTO;
+import com.paf.exercise.dto.PlayerDTO;
 import com.paf.exercise.dto.TournamentDTO;
 import com.paf.exercise.model.Tournament;
 import com.paf.exercise.model.enums.Currency;
@@ -41,6 +42,23 @@ class TournamentControllerTests {
   void setUp() {
     MockitoAnnotations.openMocks(this);
     tournamentController = new TournamentController(tournamentService);
+  }
+
+  @Test
+  void getAllPlayerInTournament_ShouldReturnOnePlayer() {
+    PlayerDTO mockPlayer = new PlayerDTO(PLAYER_NAME);
+    mockPlayer.setId(PLAYER_ID);
+    List<PlayerDTO> mockPlayerList = List.of(mockPlayer);
+
+    when(tournamentService.getAllPlayersInTournament(TOURNAMENT_ID)).thenReturn(mockPlayerList);
+
+    ResponseEntity<List<PlayerDTO>> response =
+        tournamentController.getAllPlayersInTournament(TOURNAMENT_ID);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertFalse(response.getBody().isEmpty());
+    assertEquals(1, response.getBody().size());
+    assertEquals(PLAYER_ID, response.getBody().get(0).getId());
   }
 
   @Test

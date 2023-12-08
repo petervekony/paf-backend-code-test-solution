@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doNothing;
@@ -20,8 +21,10 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.paf.exercise.dto.ExerciseDTO;
+import com.paf.exercise.dto.PlayerDTO;
 import com.paf.exercise.dto.TournamentDTO;
 import com.paf.exercise.exception.NotFoundException;
+import com.paf.exercise.exception.PlayerAlreadyRegisteredInTournamentException;
 import com.paf.exercise.model.Player;
 import com.paf.exercise.model.Tournament;
 import com.paf.exercise.model.enums.Currency;
@@ -238,5 +241,55 @@ class TournamentServiceTests {
         () -> {
           tournamentService.updateTournamentDetails(tournamentId, tournamentDTO);
         });
+  }
+
+  @Test
+  void testAddPlayerToTournament_WhenPlayerAlreadyRegistered() {
+    int playerId = 1;
+    int tournamentId = 1;
+
+    Player mockPlayer = new Player(JOHN_DOE);
+    mockPlayer.setId(playerId);
+    Tournament mockTournament = new Tournament("Tournament", 1000.00, Currency.EUR);
+    mockTournament.setId(tournamentId);
+    mockTournament.getPlayers().add(mockPlayer);
+
+    when(playerRepository.findById(playerId)).thenReturn(Optional.of(mockPlayer));
+    when(tournamentRepository.findById(tournamentId)).thenReturn(Optional.of(mockTournament));
+
+    assertThrows(
+        PlayerAlreadyRegisteredInTournamentException.class,
+        () -> tournamentService.addPlayerToTournament(playerId, tournamentId));
+  }
+
+  @Test
+  void testGetAllPlayersInTournament_WhenTournamentHasPlayers() {
+    Integer tournamentId = 1;
+    Player mockPlayer1 = new Player(JOHN_DOE);
+    mockPlayer1.setId(1);
+    Player mockPlayer2 = new Player(JANE_DOE);
+    mockPlayer2.setId(2);
+
+    Tournament mockTournament = new Tournament("Tournament", 1000.00, Currency.EUR);
+    mockTournament.setId(tournamentId);
+    mockTournament.getPlayers().addAll(Arrays.asList(mockPlayer1, mockPlayer2));
+
+    when(tournamentRepository.findById(tournamentId)).thenReturn(Optional.of(mockTournament));
+
+    List<PlayerDTO> players = tournamentService.getAllPlayersInTournament(tournamentId);
+
+    assertNotNull(players);
+    assertEquals(2, players.size());
+    assertTrue(players.stream().anyMatch(p -> p.getId().equals(mockPlayer1.getId())));
+    assertTrue(players.stream().anyMatch(p -> p.getId().equals(mockPlayer2.getId())));
+  }
+
+  @Test
+  void testGetAllPlayersInTournament_WhenTournamentNotFound() {
+    Integer tournamentId = 1;
+    when(tournamentRepository.findById(tournamentId)).thenReturn(Optional.empty());
+
+    assertThrows(
+        NotFoundException.class, () -> tournamentService.getAllPlayersInTournament(tournamentId));
   }
 }

@@ -34,10 +34,12 @@ public class GlobalExceptionHandler {
         .getAllErrors()
         .forEach(
             error -> {
-              String fieldName =
-                  error instanceof FieldError
-                      ? ((FieldError) error).getField()
-                      : error.getObjectName();
+              String fieldName;
+              if (error instanceof FieldError fieldError) {
+                fieldName = fieldError.getField();
+              } else {
+                fieldName = error.getObjectName();
+              }
               String errorMessage = error.getDefaultMessage();
               errors.put(fieldName, errorMessage);
             });

@@ -2,7 +2,6 @@ package com.paf.exercise.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,9 +38,7 @@ public class PlayerController {
       return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
     }
     List<PlayerDTO> response =
-        allPlayers.stream()
-            .map(player -> new PlayerDTO(player.getId(), player.getName()))
-            .collect(Collectors.toList());
+        allPlayers.stream().map(player -> new PlayerDTO(player.getId(), player.getName())).toList();
 
     return new ResponseEntity<>(response, HttpStatus.OK);
   }

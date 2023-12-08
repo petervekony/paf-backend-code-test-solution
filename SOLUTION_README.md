@@ -7,9 +7,10 @@
   - spring-boot-starter-validation
   - spring-boot-starter-data-jpa
   - lombok
-  - mockito-core
+  - mockito-core (for testing)
   - byte-buddy (mockito-core dependency)
   - byte-buddy-agent (mockito-core-dependency)
+  - jacoco (for test coverage reports)
 
 ## Database setup
 
